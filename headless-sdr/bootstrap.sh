@@ -5,31 +5,28 @@
 set -e
 set -u
 
-# enable only ssh key auth for pi@rpi
-echo 'pi' | ssh-copy-id pi@rpi
-ssh pi@rpi
-newpw=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
-echo "pi:$newpw" | chpasswd
-sudo passwd -d pi
-sudo sed -i 's/^#\?PasswordAuthentication .*/PasswordAuthentication no/' /etc/ssh/sshd_config
-sudo sed -i 's/^#\?ChallengeResponseAuthentication .*/ChallengeResponseAuthentication no/' /etc/ssh/sshd_config
-sudo sed -i 's/^#\?UsePAM .*/ChallengeResponseAuthentication no/' /etc/ssh/sshd_config
-sudo /etc/init.d/ssh restart
+#newpw=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+#echo "pi:$newpw" | /usr/sbin/chpasswd
+passwd -d pi
+sed -i 's/^#\?PasswordAuthentication .*/PasswordAuthentication no/' /etc/ssh/sshd_config
+sed -i 's/^#\?ChallengeResponseAuthentication .*/ChallengeResponseAuthentication no/' /etc/ssh/sshd_config
+sed -i 's/^#\?UsePAM .*/ChallengeResponseAuthentication no/' /etc/ssh/sshd_config
+/etc/init.d/ssh restart
 
 # OS upgrade
-sudo apt-get update -y
-sudo apt-get upgrade -y
+apt-get update -y
+apt-get upgrade -y
 
 # install tools and dependencies
-sudo apt-get -y install \
+apt-get -y install \
   git build-essential cmake vim \
   libusb-1.0-0-dev pkg-config \
   libpython-dev python-numpy swig \
   i2c-tools
 
 # build code...
-mkdir -p ~/git
-pushd ~/git
+mkdir -p ~pi/git
+pushd ~pi/git
 
 # ... airspy
 git clone https://github.com/airspy/host.git
@@ -37,7 +34,7 @@ mkdir host/build
 pushd host/build
 cmake ../ -DINSTALL_UDEV_RULES=ON
 make
-sudo make install
+make install
 popd
 
 # ... rtlsdr
@@ -46,7 +43,7 @@ mkdir rtl-sdr/build
 pushd rtl-sdr/build
 cmake ../
 make
-sudo make install
+make install
 popd
 
 # ... SoapySDR
@@ -55,7 +52,7 @@ mkdir SoapySDR/build
 pushd SoapySDR/build
 cmake ..
 make -j4
-sudo make install
+make install
 popd
 
 # ... Soapy Remote
@@ -64,7 +61,7 @@ mkdir SoapyRemote/build
 pushd SoapyRemote/build
 cmake ..
 make -j4
-sudo make install
+make install
 popd
 
 # ... SoapyAirspy
@@ -73,7 +70,7 @@ mkdir SoapyAirspy/build
 pushd SoapyAirspy/build
 cmake ..
 make -j4
-sudo make install
+make install
 popd
 
 # ... SoapyRTLSDR
@@ -82,7 +79,7 @@ mkdir SoapyRTLSDR/build
 pushd SoapyRTLSDR/build
 cmake ..
 make
-sudo make install
+make install
 popd
 
 # ... WiringPi
@@ -93,19 +90,19 @@ popd
 
 # ... Witty Pi
 git clone https://github.com/evansgp/Witty-Pi.git
-mkdir ~/wittyPi
-pushd ~/wittyPi
-ln -s ~/git/Witty-Pi/wittyPi/{wittyPi,daemon,syncTime,runScript}.sh .
+mkdir ~pi/wittyPi
+pushd ~pi/wittyPi
+ln -s ~pi/git/Witty-Pi/wittyPi/{wittyPi,daemon,syncTime,runScript}.sh .
 chmod +x ~/wittyPi/*.sh
-sudo cp /home/pi/git/Witty-Pi/wittyPi/init.sh /etc/init.d/wittypi
-sudo chmod +x /etc/init.d/wittypi
-sudo update-rc.d wittypi defaults
-cd ~
-sudo sh ~/git/Witty-Pi/installWittyPi.sh
+cp ~pi/git/Witty-Pi/wittyPi/init.sh /etc/init.d/wittypi
+chmod +x /etc/init.d/wittypi
+update-rc.d wittypi defaults
+cd ~pi
+sh ~pi/git/Witty-Pi/installWittyPi.sh
 popd
 
 # ... done
 
 # One of these deps insisted it needed a reboot...
 echo "Rebooting now..."
-sudo reboot
+reboot

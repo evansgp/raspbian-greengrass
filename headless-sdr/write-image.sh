@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Headless raspbian jessie lite - set up for network
+# Write to USB a headless raspbian jessie lite image that's set up for network
 
 set -e
 set -u
