@@ -7,7 +7,7 @@ set -u
 
 device=
 url="http://vx2-downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2017-01-10/2017-01-11-raspbian-jessie-lite.zip"
-yes=false
+yes="false"
 ssid="=^,,^="
 psk=
 
@@ -47,6 +47,8 @@ if [ ! "$device" ] || [ ! "$psk" ] ; then
   exit 1
 fi
 
+mkdir -p $tmp
+
 if [ -f $download ] ; then
   echo "Using existing image: $(ls -lathr $download)"
 else
@@ -66,9 +68,9 @@ if [ ! -f $img ] ; then
   exit 1
 fi
 
-mounts=$(ls $device?* 2>/dev/null)
+mounts=$(ls $device?* 2>/dev/null) || true
 if [ "$mounts" ] ; then
-  sudo umount $(ls $device?*) || true
+  sudo umount $(ls $device?*)
 fi
 
 command="dd bs=4M if=${img} of=${device}"
