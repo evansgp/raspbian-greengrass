@@ -93,7 +93,7 @@ git clone https://github.com/evansgp/Witty-Pi.git
 mkdir ~pi/wittyPi
 pushd ~pi/wittyPi
 ln -s ~pi/git/Witty-Pi/wittyPi/{wittyPi,daemon,syncTime,runScript}.sh .
-chmod +x ~/wittyPi/*.sh
+chmod +x ~pi/wittyPi/*.sh
 cp ~pi/git/Witty-Pi/wittyPi/init.sh /etc/init.d/wittypi
 chmod +x /etc/init.d/wittypi
 update-rc.d wittypi defaults
