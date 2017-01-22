@@ -6,10 +6,10 @@ set -e
 set -u
 
 device=
+ssid=
+psk=
 url="http://vx2-downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2017-01-10/2017-01-11-raspbian-jessie-lite.zip"
 yes="false"
-ssid="=^,,^="
-psk=
 
 tmp=/tmp/rasp
 download=$tmp/raspbian.zip
@@ -42,8 +42,8 @@ case $i in
 esac
 done
 
-if [ ! "$device" ] || [ ! "$psk" ] ; then
-  echo "Requires -d|--device=* and -p|--psk=* to be specified"
+if [ ! "$device" ] || [ ! "$ssid" ] || [ ! "$psk" ] || [ ! "$url" ] ; then
+  echo "Requires --device, --ssid, --psk and --url to be specified"
   exit 1
 fi
 

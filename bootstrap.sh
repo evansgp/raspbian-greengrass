@@ -5,6 +5,7 @@
 set -e
 set -u
 
+# Disable plain password auth
 #newpw=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
 #echo "pi:$newpw" | /usr/sbin/chpasswd
 passwd -d pi
