@@ -42,7 +42,7 @@ popd
 git clone https://github.com/keenerd/rtl-sdr.git
 mkdir rtl-sdr/build
 pushd rtl-sdr/build
-cmake ../
+cmake ../ -DINSTALL_UDEV_RULES=ON -DDETACH_KERNEL_DRIVER=ON
 make
 make install
 popd
