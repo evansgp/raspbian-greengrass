@@ -8,6 +8,8 @@ Copies a raspbian jessie lite 64 image from the internet, does just enough to ge
 
 `./write-image.sh -d=/dev/sdc -s="=^,,^=" -p="secret" -y`
 
+Use `lsblk` to identify the device.
+
 ## provision.sh
 
 Sets up SSH and runs bootstrap.sh on the RPI.
