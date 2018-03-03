@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Write to USB a headless raspbian jessie lite image that's set up for evansgp's network.
+# Write to USB a headless raspbian jessie lite image that's set up for a wireless network.
 
 set -e
 set -u
@@ -8,7 +8,8 @@ set -u
 device=
 ssid=
 psk=
-url="http://vx2-downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2017-01-10/2017-01-11-raspbian-jessie-lite.zip"
+# This image specifically is stated as being compatible
+url="https://downloads.raspberrypi.org/raspbian/images/raspbian-2017-03-03/2017-03-02-raspbian-jessie.zip"
 yes="false"
 
 tmp=/tmp/rasp
