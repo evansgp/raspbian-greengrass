@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-#
-# Write to USB a headless raspbian jessie lite image that's set up for a wireless network.
+
+# Write a raspbian image that's set up for a wireless network and ssh.
 
 set -e
 set -u
@@ -8,7 +8,7 @@ set -u
 device=
 ssid=
 psk=
-# This image specifically is stated as being compatible
+# This image specifically is stated as being compatible with greengrass
 url="https://downloads.raspberrypi.org/raspbian/images/raspbian-2017-03-03/2017-03-02-raspbian-jessie.zip"
 yes="false"
 
@@ -54,24 +54,19 @@ if [ -f $download ] ; then
   echo "Using existing image: $(ls -lathr $download)"
 else
   echo "Downloading $url to $download"
-  mkdir -p $tmp
   echo curl $url > $download
 fi
 
 sha1sum $download
 curl $url.sha1
 
-unzip -o $download *raspbian-jessie-lite.img -d $tmp
-img=$(ls $tmp/*raspbian-jessie-lite.img)
+[ ! -f $tmp/*raspbian*.img ] && echo "Unzipping" && unzip -o $download -d $tmp
+
+img=$(ls $tmp/*raspbian*.img)
 
 if [ ! -f $img ] ; then
   echo "$img is not a file"
   exit 1
-fi
-
-mounts=$(ls $device?* 2>/dev/null) || true
-if [ "$mounts" ] ; then
-  sudo umount $(ls $device?*)
 fi
 
 command="dd bs=4M if=${img} of=${device}"
@@ -108,9 +103,7 @@ EOM
 echo "$wpa" | sudo tee --append $root/etc/wpa_supplicant/wpa_supplicant.conf
 sync
 
-mounts=$(ls $device?* 2>/dev/null)
-if [ "$mounts" ] ; then
-  sudo umount $(ls $device?*) || true
-fi
+umount $root
+umount $boot
 
 echo "Done."
