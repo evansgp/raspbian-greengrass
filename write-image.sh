@@ -102,7 +102,7 @@ EOM
 echo "$wpa" | sudo tee --append $root/etc/wpa_supplicant/wpa_supplicant.conf
 sync
 
-umount $root
-umount $boot
+sudo umount $root
+sudo umount $boot
 
 echo "Done."
