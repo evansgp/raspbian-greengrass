@@ -92,6 +92,7 @@ sudo touch $boot/ssh
 
 # enable WPA
 wpa=$(cat <<-EOM
+
 network={
   ssid="$ssid"
   psk="$psk"
