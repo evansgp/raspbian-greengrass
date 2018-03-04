@@ -25,11 +25,14 @@ case $i in
 esac
 done
 
-[ -z "$host" ] && echo "Please provide -h/--host option" && return 1
-[ -z "$core_GUID" ] && echo "Please provide -c/--core GUID option" && return 1
+[ -z "$host" ] && echo "Please provide -h/--host option" && exit 1
+[ -z "$core_GUID" ] && echo "Please provide -c/--core GUID option" && exit 1
 
-[ ! -f $tmp/greengrass-linux-$gg_platform-$gg_version.tar.gz] && echo "Please download GreenGrass to $tmp" && return 1
-[ ! -f $tmp/$core_GUID-setup.tar.gz] && echo "Please download core GUID $core_GUID configuration to $tmp" && return 1
+gg_core=greengrass-linux-$gg_platform-$gg_version.tar.gz
+gg_config=$core_GUID-setup.tar.gz
+
+[ ! -f $tmp/$gg_core ] && echo "Please download $gg_core to $tmp" && exit 1
+[ ! -f $tmp/$gg_config ] && echo "Please download $gg_config  to $tmp" && exit 1
 
 # enable only ssh key auth for pi@rpi
 echo "Default password from ISO is 'raspberry'"
