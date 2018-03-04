@@ -9,7 +9,7 @@ host=
 core_GUID=
 gg_platform=arm7l
 gg_version=1.3.0
-tmp=.tmp
+tmp=files
 
 for i in "$@"
 do
