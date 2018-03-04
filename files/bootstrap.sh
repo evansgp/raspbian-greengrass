@@ -48,10 +48,8 @@ apt-get -y install \
   sqlite3 \
   rpi-update \
   git \
-  # for java support in lambdas
   oracle-java8-installer
 
-# for nodejs support in lambdas
 wget https://nodejs.org/dist/v8.9.4/node-$nodeversion.tar.xz -O /tmp/node-$nodeversion.tar.xz
 tar -xf /tmp/node-$nodeversion.tar.xz -C /usr/local/share
 
