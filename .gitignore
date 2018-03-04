@@ -1,2 +1,5 @@
 files/greengrass-*.tar.gz
 files/*-setup.tar.gz
+files/raspbian.zip
+files/*raspbian-*.img
+files/mnt

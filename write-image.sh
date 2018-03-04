@@ -8,11 +8,10 @@ set -u
 device=
 ssid=
 psk=
-# This image specifically is stated as being compatible with greengrass
-url="https://downloads.raspberrypi.org/raspbian/images/raspbian-2017-03-03/2017-03-02-raspbian-jessie.zip"
+url="https://downloads.raspberrypi.org/raspbian_lite/images/raspbian_lite-2017-12-01/2017-11-29-raspbian-stretch-lite.zip"
 yes="false"
 
-tmp=/tmp/rasp
+tmp=files
 download=$tmp/raspbian.zip
 boot=$tmp/mnt/boot
 root=$tmp/mnt/root
