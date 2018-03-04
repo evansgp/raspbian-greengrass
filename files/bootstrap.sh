@@ -44,6 +44,9 @@ fs.protected_symlinks = 1
 EOF
 
 # install tools and dependencies
+echo "debconf shared/accepted-oracle-license-v1-1 select true" | debconf-set-selections
+echo "debconf shared/accepted-oracle-license-v1-1 seen true" | debconf-set-selections
+
 apt-get -y install \
   sqlite3 \
   rpi-update \
