@@ -61,7 +61,9 @@ rpi-update b81a11258fc911170b40a0b09bbd63c84bc5ad59
 tar -xzvf /tmp/greengrass-linux-*.tar.gz -C /
 tar -xzvf /tmp/*-setup.tar.gz -C /greengrass
 wget $verisign_root_CA -O /greengrass/certs/root.ca.pem
-echo "You can now start Greengrass with sudo /greengrass/ggc/packages/*/greengrassd start"
+cp /tmp/greengrass.sh /etc/init.d/greengrass.sh
+chmod 755 /etc/init.d/greengrass.sh
+update-rc.d greengrass.sh defaults
 
 # echo and reboot
 echo 'Done, rebooting.'
