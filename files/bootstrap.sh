@@ -15,6 +15,7 @@ locale-gen $locale
 update-locale
 
 # OS upgrade
+apt-get install dirmngr
 apt-key adv --recv-key --keyserver keyserver.ubuntu.com EEA14886
 
 cat <<- EOF >> /etc/apt/sources.list

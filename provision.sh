@@ -34,6 +34,5 @@ done
 # enable only ssh key auth for pi@rpi
 echo "Default password from ISO is 'raspberry'"
 ssh-copy-id "pi@$host"
-scp $tmp/* pi@$host:/tmp
-scp bootstrap.sh pi@$host:/tmp/bootstrap.sh
+scp $tmp/$gg_core $tmp/$gg_config $tmp/greengrass.sh $tmp/bootstrap.sh pi@$host:/tmp
 ssh pi@$host sudo /bin/bash /tmp/bootstrap.sh
