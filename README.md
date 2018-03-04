@@ -16,10 +16,4 @@ Use `lsblk` to identify the device.
 
 Sets up SSH and runs bootstrap.sh on the RPI.
 
-`./provision.sh`
-
-## bootstrap.sh
-
-Installs SDR software on the RPI. Ran by provision.sh.
-
-`ssh pi@rpi sudo /bin/bash /tmp/bootstrap.sh`
+`./provision.sh -h=<rpi host> -c=<Greengrass Core GUID>`
