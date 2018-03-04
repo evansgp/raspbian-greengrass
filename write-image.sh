@@ -53,7 +53,7 @@ if [ -f $download ] ; then
   echo "Using existing image: $(ls -lathr $download)"
 else
   echo "Downloading $url to $download"
-  echo curl $url > $download
+  curl $url > $download
 fi
 
 sha1sum $download
