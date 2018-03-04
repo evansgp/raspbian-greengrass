@@ -1,109 +1,68 @@
 #!/usr/bin/env bash
 
-# Software for headless SDR on an rpi3
+# Prepare software on base raspbian
 
 set -e
 set -u
 
+locale=en_AU.UTF-8
+nodeversion=v8.9.4-linux-armv7l
+verisign_root_CA=http://www.symantec.com/content/en/us/enterprise/verisign/roots/VeriSign-Class%203-Public-Primary-Certification-Authority-G5.pem
+
+# locales
+sed -i "s/^\# $locale UTF-8$/$locale UTF-8/" /etc/locale.gen
+locale-gen $locale
+update-locale
+
+# OS upgrade
+apt-key adv --recv-key --keyserver keyserver.ubuntu.com EEA14886
+
+cat <<- EOF >> /etc/apt/sources.list
+deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main 
+deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main
+EOF
+
+apt-get update -y
+apt-get upgrade -y
+apt-get autoremove -y
+
 # Disable plain password auth
-#newpw=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
-#echo "pi:$newpw" | /usr/sbin/chpasswd
 passwd -d pi
 sed -i 's/^#\?PasswordAuthentication .*/PasswordAuthentication no/' /etc/ssh/sshd_config
 sed -i 's/^#\?ChallengeResponseAuthentication .*/ChallengeResponseAuthentication no/' /etc/ssh/sshd_config
 sed -i 's/^#\?UsePAM .*/ChallengeResponseAuthentication no/' /etc/ssh/sshd_config
 /etc/init.d/ssh restart
 
-# OS upgrade
-apt-get update -y
-apt-get upgrade -y
+# add system user for greengrass to run under
+adduser --system ggc_user
+addgroup --system ggc_group
+
+cat <<- EOF >> /etc/sysctl.d/98-rpi.conf
+fs.protected_hardlinks = 1
+fs.protected_symlinks = 1
+EOF
 
 # install tools and dependencies
 apt-get -y install \
-  git build-essential cmake vim \
-  libusb-1.0-0-dev pkg-config \
-  libpython-dev python-numpy swig \
-  i2c-tools
+  sqlite3 \
+  rpi-update \
+  git \
+  # for java support in lambdas
+  oracle-java8-installer
 
-# build code...
-mkdir -p ~pi/git
-pushd ~pi/git
+# for nodejs support in lambdas
+wget https://nodejs.org/dist/v8.9.4/node-$nodeversion.tar.xz -O /tmp/node-$nodeversion.tar.xz
+tar -xf /tmp/node-$nodeversion.tar.xz -C /usr/local/share
 
-# ... airspy
-git clone https://github.com/airspy/host.git
-mkdir host/build
-pushd host/build
-cmake ../ -DINSTALL_UDEV_RULES=ON
-make
-make install
-popd
+# update firmware, unsure if this is necessary
+rpi-update b81a11258fc911170b40a0b09bbd63c84bc5ad59
 
-# ... rtlsdr
-git clone https://github.com/keenerd/rtl-sdr.git
-mkdir rtl-sdr/build
-pushd rtl-sdr/build
-cmake ../ -DINSTALL_UDEV_RULES=ON -DDETACH_KERNEL_DRIVER=ON
-make
-make install
-popd
+# Greengrass
+tar -xzvf /tmp/greengrass-linux-*.tar.gz -C /
+tar -xzvf /tmp/*-setup.tar.gz -C /greengrass
+wget $verisign_root_CA -O /greengrass/certs/root.ca.pem
+echo "You can now start Greengrass with sudo /greengrass/ggc/packages/*/greengrassd start"
 
-# ... SoapySDR
-git clone https://github.com/pothosware/SoapySDR.git
-mkdir SoapySDR/build
-pushd SoapySDR/build
-cmake ..
-make -j4
-make install
-popd
-
-# ... Soapy Remote
-git clone https://github.com/pothosware/SoapyRemote.git
-mkdir SoapyRemote/build
-pushd SoapyRemote/build
-cmake ..
-make -j4
-make install
-popd
-
-# ... SoapyAirspy
-git clone https://github.com/pothosware/SoapyAirspy.git
-mkdir SoapyAirspy/build
-pushd SoapyAirspy/build
-cmake ..
-make -j4
-make install
-popd
-
-# ... SoapyRTLSDR
-git clone https://github.com/pothosware/SoapyRTLSDR.git
-mkdir SoapyRTLSDR/build
-pushd SoapyRTLSDR/build
-cmake ..
-make
-make install
-popd
-
-# ... WiringPi
-git clone git://git.drogon.net/wiringPi
-pushd wiringPi
-./build
-popd
-
-# ... Witty Pi
-git clone https://github.com/evansgp/Witty-Pi.git
-mkdir ~pi/wittyPi
-pushd ~pi/wittyPi
-ln -s ~pi/git/Witty-Pi/wittyPi/{wittyPi,daemon,syncTime,runScript}.sh .
-chmod +x ~pi/wittyPi/*.sh
-cp ~pi/git/Witty-Pi/wittyPi/init.sh /etc/init.d/wittypi
-chmod +x /etc/init.d/wittypi
-update-rc.d wittypi defaults
-cd ~pi
-sh ~pi/git/Witty-Pi/installWittyPi.sh
-popd
-
-# ... done
-
-# One of these deps insisted it needed a reboot...
-echo "Rebooting now..."
+# echo and reboot
+echo 'Done, rebooting.'
 reboot
