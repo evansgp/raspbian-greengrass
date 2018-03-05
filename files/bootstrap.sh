@@ -55,6 +55,8 @@ apt-get -y install \
 
 wget https://nodejs.org/dist/v8.9.4/node-$nodeversion.tar.xz -O /tmp/node-$nodeversion.tar.xz
 tar -xf /tmp/node-$nodeversion.tar.xz -C /usr/local/share
+# Greengrass needs the binary to be named nodejs6.10
+cp /usr/local/share/node-$nodeversion/bin/node /usr/local/bin/nodejs6.10
 
 # update firmware, unsure if this is necessary
 rpi-update b81a11258fc911170b40a0b09bbd63c84bc5ad59
