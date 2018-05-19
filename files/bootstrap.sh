@@ -31,7 +31,7 @@ apt-get autoremove -y
 passwd -d pi
 sed -i 's/^#\?PasswordAuthentication .*/PasswordAuthentication no/' /etc/ssh/sshd_config
 sed -i 's/^#\?ChallengeResponseAuthentication .*/ChallengeResponseAuthentication no/' /etc/ssh/sshd_config
-sed -i 's/^#\?UsePAM .*/ChallengeResponseAuthentication no/' /etc/ssh/sshd_config
+sed -i 's/^#\?UsePAM .*/UsePAM no/' /etc/ssh/sshd_config
 /etc/init.d/ssh restart
 
 # add system user for greengrass to run under
